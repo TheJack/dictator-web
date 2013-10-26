@@ -29,28 +29,6 @@
 	<script src="vendor/jquery-1.10.2.min.js"></script>
 	<script src="vendor/mespeak/mespeak.js" type="text/javascript"></script>
 	<script src="js/data-placeholder.js" type="text/javascript"></script>
-	<script>
-		$(document).ready(function() {
-			meSpeak.loadConfig("http://localhost:3000/mespeak/mespeak_config.json");
-			meSpeak.loadVoice('http://localhost:3000/mespeak/voices/en/en-us.json');
-		});
-		
-		var soundIsPlaying = false;
-		
-		$("#playButton").click(function() {
-			if (!soundIsPlaying) {
-				soundIsPlaying = true;
-				var text = $("#text").text();
-				$("#text").hide("fast");
-				$("#playButton").hide("fast");
-				meSpeak.speak(text, {}, function() {
-					soundIsPlaying = false;
-					console.log("finished");
-					$("#text").show("fast");
-					$("#playButton").show("fast");
-				});
-			}
-		});
-	</script>
+	<script src="js/single-mode.js" type="text/javascript"></script>
 </body>
 </html>

@@ -1,7 +1,13 @@
-socket = new WebSocket("ws://10.0.249.104:3000");
+socket = new WebSocket("ws://10.255.1.18:3000");
 game_round = 0;
 game_users = [];
+game_scores = [];
+game_typing_states = [];
 time_left = 0;
+queue = [];
+round_running = false;
+interval_id = 0;
+your_score = 0;
 
 $(document).ready(function() {
 	//initialize meSpeak
@@ -9,6 +15,11 @@ $(document).ready(function() {
 	meSpeak.loadVoice('http://localhost:3000/vendor/mespeak/voices/en/en-us.json');
 	
 	console.log('meSpeak loaded');
+	
+	$('#finalDialog').dialog({
+		autoOpen: false,
+		title: 'Game Over!'
+    });
 });
 
 $(document).unload(function() {
@@ -21,7 +32,13 @@ $(document).unload(function() {
 	delete socket;
 	delete game_round;
 	delete game_users;
+	delete game_scores;
+	delete game_typing_states;
 	delete time_left;
+	delete queue;
+	delete round_running;
+	delete interval_id;
+	delete your_score;
 });
 
 socket.onmessage = function (event) {
@@ -30,7 +47,7 @@ socket.onmessage = function (event) {
 	var command = parts[0];
 	switch(command) {
 		case 'round':
-			start_round(parts[1], parts[2], parts[3]);
+			push_to_round_queue(parts.slice(1));
 			break;
 		case 'start':
 			start_game(parts.slice(2));
@@ -40,6 +57,12 @@ socket.onmessage = function (event) {
 			break;
 		case 'end':
 			finish_game(parts.slice(1));
+			break;
+		case 'update_typing_state':
+			update_typing_state(parts.slice(1));
+			break;
+		case 'your_score':
+			update_your_score(parts[1]);
 			break;
 	}
 }
@@ -54,63 +77,164 @@ socket.onopen = function (event) {
 	console.log('Game started');
 };
 
+function update_your_score(score) {
+	your_score = score;
+}
+
+function send_to_server(message) {
+	if (round_running) {
+		socket.send(message);
+	}
+}
+
+function update_typing_state(typing_states) {
+	game_typing_states = typing_states;
+	show_scores();
+}
+
+function push_to_round_queue(parts) {
+	queue.push(parts);
+	offer_round();
+}
+
+function offer_round() {
+	if (!round_running && queue.length > 0) {
+		var next_round_info = queue.shift();
+		start_round(
+			next_round_info[0],
+			next_round_info[1],
+			next_round_info[2]
+		);
+	}
+}
+
 function start_game(users) {
 	game_users = [];
-	var scores = [];
+	game_scores = [];
 	for (var i = 0; i < users.length; ++i) {
 		game_users.push(users[i]);
-		scores.push(0);
+		game_scores.push(0);
 	}
 	
-	update_scores(scores);
+	show_scores();
 }
 
 function finish_game(final_scores) {
-	update_scores(final_scores);
-	alert('game_ended');
+	game_scores = final_scores;
+	//show_scores();
+	show_final_dialog();
+}
+
+function show_final_dialog() {
+	$('#finalScore').html(your_score);
+	for (var i = 0; i < game_scores.length; ++i) {
+		$('#finalRnakings').append('<li>' + game_users[i] + ' - ' + game_scores[i] + ' points</li>');
+	}
+	
+	$('#finalDialog').dialog('open');
 }
 
 function update_scores(scores) {
+	game_scores = scores;
+	show_scores();
+}
+
+function show_scores() {
 	$('#rankingsList').empty();
-	for (var i = 0; i < scores.length; ++i) {
-		$('#rankingsList').append('<li>' + game_users[i] + ' - ' + scores[i] + ' points</li>');
+	for (var i = 0; i < game_scores.length; ++i) {
+		$('#rankingsList').append('<li>' + game_users[i] + (game_typing_states[i] == 1 ? '(typing...)' : '') +
+			' - ' + game_scores[i] + ' points</li>');
 	}
 }
 
 function start_round(round, word, time_out) {
+	clear_input_field();
+	
+	round_running = true;
 	game_round = round;
-	$("#currentRound").html(round);
+	$('#currentRound').html(round);
+	
 	meSpeak.speak(word);
 	
-	time_left = parseInt(time_out) + 1;
+	time_left = parseInt(time_out);
+	startTimer(round);
+}
+
+function clear_input_field() {
+	$('#userInput').empty();
+	delete(($('#userInput')[0]).dataset.divPlaceholderContent);
+}
+
+function startTimer(id) {
 	interval_id = setInterval(updateTimer, 1000);
 	function updateTimer() {
+		$('#currentTimeLeft').html(time_left);
 		if (time_left > 0) {
 			time_left--;
-			$('#currentTimeLeft').html(time_left);
 		} else {
-			clearInterval(interval_id);
+			stopTimer();
 		}
 	}
 }
 
+function stopTimer() {
+	clearInterval(interval_id);
+	round_running = false;
+	offer_round();
+}
+
 function finish_round(word) {
-	socket.send('answer,' + game_round + ',' + word);
+	send_to_server('answer,' + game_round + ',' + word);
+	stopTimer();
 }
 
 $('#submitButton').click(function() {
 	var word = $('#userInput').text();
-	if (time_left > 0) {
+	if (round_running) {
 		finish_round(word);
 		console.log('answer send for ' + game_round + ' ' + word);
 	} else {
-		console.log('time is up');
+		console.log('no active round!');
 	}
 });
 
-$('#userInput').keyup(function(e){
-    if(e.keyCode == 13)
-    {	e.preventDefault();
+$('#userInput').keydown(function(e){
+    if(e.keyCode == 13) {
+		e.preventDefault();
+		e.stopPropagation();
         $('#submitButton').trigger("click");
+		
+		return false;
     }
+});
+
+var userIsTyping = false;
+var typingTimer;                //timer identifier
+var doneTypingInterval = 3000;  //time in ms, 5 second for example
+
+//on keyup, start the countdown
+$('#userInput').keyup(function(){
+    typingTimer = setTimeout(doneTyping, doneTypingInterval);
+});
+
+//on keydown, clear the countdown 
+$('#userInput').keydown(function(){
+    clearTimeout(typingTimer);
+});
+
+//user is "finished typing," do something
+function doneTyping () {
+	if (userIsTyping) {
+		userIsTyping = false;
+		console.log('end typing');
+		socket.send('update_typing_state,0');
+	}
+}
+
+$('#userInput').keypress(function() {
+	if (!userIsTyping) {
+		userIsTyping = true;
+		console.log('start typing');
+		socket.send('update_typing_state,1');
+	}
 });
