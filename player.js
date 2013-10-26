@@ -1,9 +1,11 @@
+var EventEmitter = require('events').EventEmitter;
 var queue = require('./queue.js');
 
 var Player = function () {
   this.name = 'Guest';
   this.game = null;
 };
+Player.prototype.__proto__ = EventEmitter.prototype;
 
 Player.prototype.handleMessage = function (message) {
   console.log('received message ' + message);
@@ -16,8 +18,8 @@ Player.prototype.handleMessage = function (message) {
     case 'play':
       queue.addPlayer(this);
       break;
-    case 'answer':
-      console.warn('HANDLE answer!');
+    default:
+      this.emit('game_message', parts);
       break;
   }
 };

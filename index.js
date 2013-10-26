@@ -15,6 +15,9 @@ var wss = new WebSocketServer({server: server});
 wss.on('connection', function (ws) {
   var p = new Player();
   ws.on('message', p.handleMessage);
+  p.on('message', function (message) {
+    ws.send(message);
+  });
 });
 
 var net = require('net');
@@ -22,6 +25,9 @@ var net = require('net');
 var netServer = net.createServer(function (con) {
   var p = new Player();
   con.on('message', p.handleMessage);
+  p.on('message', function (message) {
+    con.write(message);
+  });
   console.log('connection from')
   var buffer = '';
   con.on('data', function (data) {
