@@ -54,7 +54,7 @@ Game.prototype.emitScores = function () {
 };
 
 Game.prototype.updateTypingState = function (player, argsArray) {
-  player.isTyping = argsArray[0];
+  player.isTyping = Number(argsArray[0]);
   this.emitTypingStates();
 };
 
@@ -76,7 +76,6 @@ Game.prototype.resetTypingStates = function () {
 Game.prototype.emit = function (message) {
   for (var i = 0; i < this.players.length; ++i) {
     this.players[i].emit('client_message', message);
-    console.log(this.players[i].listeners('client_message'));
   }
 };
 
@@ -114,7 +113,7 @@ Game.prototype.end = function () {
   this.emit(message);
 };
 
-Game.rounds = 5;
+Game.rounds = 2;
 Game.round_timeout = 10;
 
 module.exports = Game;
