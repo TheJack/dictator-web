@@ -36,7 +36,12 @@ Game.prototype.handleAnswer = function (player, argsArray) {
   var editDistance = StringUtils.editDistance(word, this.words[round]);
   var score = Math.max(0, this.words[round].length - editDistance);
   player.score += score;
+  this.emitPlayerScore(player);
   this.emitScores();
+};
+
+Game.prototype.emitPlayerScore = function (player) {
+  player.emit('client_message', 'your_score,' + player.score);
 };
 
 Game.prototype.emitScores = function () {
@@ -49,7 +54,7 @@ Game.prototype.emitScores = function () {
 };
 
 Game.prototype.updateTypingState = function (player, argsArray) {
-  player.isTyping = true;
+  player.isTyping = argsArray[0];
   this.emitTypingStates();
 };
 
@@ -97,7 +102,7 @@ Game.prototype.startRound = function (round) {
     } else {
       game.end();
     }
-  }, Game.round_timeout * 1000);
+  }, (Game.round_timeout + 1) * 1000);
 };
 
 Game.prototype.end = function () {
@@ -110,6 +115,6 @@ Game.prototype.end = function () {
 };
 
 Game.rounds = 5;
-Game.round_timeout = 5;
+Game.round_timeout = 10;
 
 module.exports = Game;
