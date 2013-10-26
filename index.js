@@ -26,13 +26,20 @@ wss.on('connection', function (ws) {
 var net = require('net');
 
 var netServer = net.createServer(function (con) {
+  con.on('error', function (err) {
+    console.error(err);
+  });
   var p = new Player();
   con.on('message', function (message) {
-    p.handleMessage();
+    p.handleMessage(message);
   });
   p.on('client_message', function handleTcpClientMessage(message) {
     console.log('writing message ' + message + ' from ' + con.remoteAddress);
-    con.write(message);
+    message += '\n';
+    var res = con.write(message, function () {
+      console.log('wrote data to TCP socket');
+    });
+    console.log('result from calling con.write: ' + res);
   });
   console.log(p.listeners('client_message'));
   

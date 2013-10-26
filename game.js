@@ -41,7 +41,7 @@ Game.prototype.handleAnswer = function (player, argsArray) {
 
 Game.prototype.emitScores = function () {
   var message = 'update_scores';
-  for (var i = 0; i < players.length; ++i) {
+  for (var i = 0; i < this.players.length; ++i) {
     message += ',';
     message += this.players[i].score;
   }
@@ -91,13 +91,13 @@ Game.prototype.startRound = function (round) {
   var message = 'round,' + round + ',' + this.words[round] + ',' + Game.round_timeout;
   this.emit(message);
   var game = this;
-  setTimeout(this.round_timeout, function () {
+  setTimeout(function () {
     if (round + 1 < Game.rounds) {
       game.startRound(round + 1);
     } else {
       game.end();
     }
-  });
+  }, Game.round_timeout * 1000);
 };
 
 Game.prototype.end = function () {
@@ -110,6 +110,6 @@ Game.prototype.end = function () {
 };
 
 Game.rounds = 5;
-Game.round_timeout = 10;
+Game.round_timeout = 5;
 
 module.exports = Game;
