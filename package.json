@@ -1,0 +1,7 @@
+{
+  "name": "dictator-web",
+  "dependencies": {
+    "express": "*",
+    "ws": "*"
+  }
+}
