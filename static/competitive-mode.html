@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dictator</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+
+</head>
+<body>
+	<div class="content">
+		<h1>Dictator</h1>
+		<div>
+		You are playing against:
+			<ol id="rankingsList">
+			</ol>
+		</div>
+		<br/>
+		<div id="userInput" contenteditable="true" data-placeholder="Enter here" class="text" >
+		</div>
+		<br/>
+		<div id="submitButton" class="button">
+			Submit it!
+		</div>
+		<br/>
+		<div>
+			<div style="float: left;">Time: <span id="currentTimeLeft">?</span> sec</div>
+			<div style="float: right;"> Round: <span id="currentRound">?</span></div>
+		</div>
+	</div>
+	
+	<script src="vendor/jquery-1.10.2.min.js"></script>
+	<script src="vendor/mespeak/mespeak.js" type="text/javascript"></script>
+	<script src="js/data-placeholder.js" type="text/javascript"></script>
+	<script src="js/competitive-mode.js" type="text/javascript"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dictator</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<div class="content">
+		<h1>Dictator</h1>
+		<div>
+			<div id="text" class="text">
+				<p>
+					George Jones (1896–1992) was a senior commander in the Royal Australian Air Force (RAAF). He served as Chief of the Air Staff from 1942 to 1952, the longest continuous tenure of any RAAF chief. During World War I, Jones fought as an infantryman at Gallipoli before transferring to the Australian Flying Corps.
+				</p>
+			</div>
+			<div id="playButton" class="button">
+				Play it!
+			</div>
+		</div>
+		<br/>
+		<div id="userInput" contenteditable="true" data-placeholder="Enter here" class="text" >
+		</div>
+		<br/>
+		<div id="submitButton" class="button">
+			Submit it!
+		</div>
+	</div>
+	
+	<script src="vendor/jquery-1.10.2.min.js"></script>
+	<script src="vendor/mespeak/mespeak.js" type="text/javascript"></script>
+	<script src="js/data-placeholder.js" type="text/javascript"></script>
+	<script>
+		$(document).ready(function() {
+			meSpeak.loadConfig("http://localhost:3000/mespeak/mespeak_config.json");
+			meSpeak.loadVoice('http://localhost:3000/mespeak/voices/en/en-us.json');
+		});
+		
+		var soundIsPlaying = false;
+		
+		$("#playButton").click(function() {
+			if (!soundIsPlaying) {
+				soundIsPlaying = true;
+				var text = $("#text").text();
+				$("#text").hide("fast");
+				$("#playButton").hide("fast");
+				meSpeak.speak(text, {}, function() {
+					soundIsPlaying = false;
+					console.log("finished");
+					$("#text").show("fast");
+					$("#playButton").show("fast");
+				});
+			}
+		});
+	</script>
+</body>
+</html>
