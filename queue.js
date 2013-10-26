@@ -2,7 +2,7 @@ var Game = require('./game.js');
 
 var playerQueue = {
   players: [],
-  gameSize: 1,
+  gameSize: 3,
   addPlayer: function (player) {
     this.players.push(player);
     console.log('There are ' + this.players.length + ' players in the queue.');
