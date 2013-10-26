@@ -14,6 +14,13 @@ var playerQueue = {
       var game = new Game(this.players);
       this.players = [];
     }
+  },
+  removePlayer: function (player) {
+    var index = this.players.indexOf(player);
+    if (index != -1) {
+      console.log('Removed player ' + player.name + ' from queue.');
+      this.players.splice(index, 1);
+    }
   }
 };
 

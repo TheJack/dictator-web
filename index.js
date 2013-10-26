@@ -14,9 +14,10 @@ server.listen(3000, '0.0.0.0');
 var wss = new WebSocketServer({server: server});
 wss.on('connection', function (ws) {
   var p = new Player();
-  ws.on('closed', function () {
+  ws.on('close', function () {
     console.log('WebSocket connection closed.');
     p.removeAllListeners('client_message');
+    playerQueue.removePlayer(p);
   });
   ws.on('message', function (message) {
     p.handleMessage(message);
