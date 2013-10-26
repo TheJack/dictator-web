@@ -162,6 +162,7 @@ function start_round(round, word, time_out) {
 function clear_input_field() {
 	$('#userInput').empty();
 	delete(($('#userInput')[0]).dataset.divPlaceholderContent);
+	$('#timeContainer').css('color', 'black');
 }
 
 function startTimer(id) {
@@ -169,6 +170,9 @@ function startTimer(id) {
 	function updateTimer() {
 		$('#currentTimeLeft').html(time_left);
 		if (time_left > 0) {
+			if (time_left == 4) {
+				$('#timeContainer').css('color', 'red');
+			}
 			time_left--;
 		} else {
 			stopTimer();
@@ -184,6 +188,7 @@ function stopTimer() {
 
 function finish_round(word) {
 	send_to_server('answer,' + game_round + ',' + word);
+	$('#timeContainer').css('color', 'green');
 	stopTimer();
 }
 
