@@ -23,13 +23,13 @@ wss.on('connection', function (ws) {
     p.handleMessage(message);
   });
   p.on('client_message', function handleWsClientMessage(message) {
+    console.log('sending message ' + message);
     try {
       ws.send(message);
     } catch (e) {
       console.log(e);
     }
   });
-  console.log(p.listeners('client_message'));
 });
 
 var net = require('net');
@@ -50,7 +50,6 @@ var netServer = net.createServer(function (con) {
     });
     console.log('result from calling con.write: ' + res);
   });
-  console.log(p.listeners('client_message'));
   
   console.log('connection from')
   var buffer = '';

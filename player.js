@@ -10,8 +10,6 @@ var Player = function () {
 util.inherits(Player, EventEmitter);
 
 Player.prototype.handleMessage = function (message) {
-  console.log('player listeners in handleMessage:');
-  console.log(this.listeners('client_message'));
   console.log('received message ' + message);
   var parts = message.split(',');
   var command = parts[0];
