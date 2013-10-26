@@ -15,13 +15,18 @@ var wss = new WebSocketServer({server: server});
 wss.on('connection', function (ws) {
   var p = new Player();
   ws.on('closed', function () {
+    console.log('WebSocket connection closed.');
     p.removeAllListeners('client_message');
   });
   ws.on('message', function (message) {
     p.handleMessage(message);
   });
   p.on('client_message', function handleWsClientMessage(message) {
-    ws.send(message);
+    try {
+      ws.send(message);
+    } catch (e) {
+      console.log(e);
+    }
   });
   console.log(p.listeners('client_message'));
 });
