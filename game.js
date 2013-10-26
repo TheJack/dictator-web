@@ -1,3 +1,5 @@
+var StringUtils = require('./string_utils.js');
+
 var Game = function (players) {
   console.log('starting a new game...');
   this.words = ['omg', 'wtf', 'ebasi', 'gggg', 'prase'];
@@ -31,10 +33,8 @@ Game.prototype.handlePlayerMessage = function (player, parts) {
 Game.prototype.handleAnswer = function (player, argsArray) {
   var round = argsArray[0];
   var word = argsArray[1];
-  var score = 0;
-  if (word == this.words[round]) {
-    score = 1;
-  }
+  var editDistance = StringUtils.editDistance(word, this.words[round]);
+  var score = Math.max(0, this.words[round].length - editDistance);
   player.score += score;
   this.emitScores();
 };
