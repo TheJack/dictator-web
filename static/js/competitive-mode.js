@@ -16,10 +16,9 @@ $(document).ready(function() {
 	
 	console.log('meSpeak loaded');
 	
-	$('#finalDialog').dialog({
-		autoOpen: false,
-		title: 'Game Over!'
-    });
+	$('#finalDialog').modal({
+		show: false
+	});
 });
 
 $(document).unload(function() {
@@ -128,10 +127,10 @@ function finish_game(final_scores) {
 function show_final_dialog() {
 	$('#finalScore').html(your_score);
 	for (var i = 0; i < game_scores.length; ++i) {
-		$('#finalRnakings').append('<li>' + game_users[i] + ' - ' + game_scores[i] + ' points</li>');
+		$('#finalRankings').append('<li>' + game_users[i] + ' - ' + game_scores[i] + ' points</li>');
 	}
 	
-	$('#finalDialog').dialog('open');
+	$('#finalDialog').modal('show');
 }
 
 function update_scores(scores) {
