@@ -14,23 +14,32 @@ server.listen(3000, '0.0.0.0');
 var wss = new WebSocketServer({server: server});
 wss.on('connection', function (ws) {
   var p = new Player();
-  ws.on('message', p.handleMessage);
-  p.on('message', function (message) {
+  ws.on('message', function (message) {
+    p.handleMessage(message);
+  });
+  p.on('client_message', function handleWsClientMessage(message) {
     ws.send(message);
   });
+  console.log(p.listeners('client_message'));
 });
 
 var net = require('net');
 
 var netServer = net.createServer(function (con) {
   var p = new Player();
-  con.on('message', p.handleMessage);
-  p.on('message', function (message) {
+  con.on('message', function (message) {
+    p.handleMessage();
+  });
+  p.on('client_message', function handleTcpClientMessage(message) {
+    console.log('writing message ' + message + ' from ' + con.remoteAddress);
     con.write(message);
   });
+  console.log(p.listeners('client_message'));
+  
   console.log('connection from')
   var buffer = '';
   con.on('data', function (data) {
+    console.log('data event ' + data);
     buffer += data.toString();
     handleAppend();
   });

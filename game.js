@@ -1,16 +1,19 @@
 var Game = function (players) {
+  console.log('starting a new game...');
   this.words = ['omg', 'wtf', 'ebasi', 'gggg', 'prase'];
+  var game = this;
   for (var i = 0; i < players.length; ++i) {
     players[i].score = 0;
 
     (function () {
       var player = players[i];
       player.on('game_message', function (parts) {
-        this.handlePlayerMessage(player, parts);
+        game.handlePlayerMessage(player, parts);
       });
     })();
   }
   this.players = players;
+  this.start();
 };
 
 Game.prototype.handlePlayerMessage = function (player, parts) {
@@ -67,15 +70,16 @@ Game.prototype.resetTypingStates = function () {
 
 Game.prototype.emit = function (message) {
   for (var i = 0; i < this.players.length; ++i) {
-    this.players[i].emit('message', message);
+    this.players[i].emit('client_message', message);
+    console.log(this.players[i].listeners('client_message'));
   }
 };
 
 Game.prototype.start = function () {
-  var message = 'start,' + players.length;
-  for (var i = 0; i < players.length; ++i) {
+  var message = 'start,' + this.players.length;
+  for (var i = 0; i < this.players.length; ++i) {
     message += ',';
-    message += players[i].name;
+    message += this.players[i].name;
   }
   this.emit(message);
 
@@ -84,12 +88,25 @@ Game.prototype.start = function () {
 
 Game.prototype.startRound = function (round) {
   this.resetTypingStates();
-  var message = 'round,' + round + ',' + this.words[round] + ',' + this.round_timeout;
+  var message = 'round,' + round + ',' + this.words[round] + ',' + Game.round_timeout;
   this.emit(message);
   var game = this;
-  setTimeout(round_timeout, function () {
-    game.startRound(round + 1);
+  setTimeout(this.round_timeout, function () {
+    if (round + 1 < Game.rounds) {
+      game.startRound(round + 1);
+    } else {
+      game.end();
+    }
   });
+};
+
+Game.prototype.end = function () {
+  var message = 'end';
+  for (var i = 0; i < this.players.length; ++i) {
+    message += ',';
+    message += this.players[i].score;
+  }
+  this.emit(message);
 };
 
 Game.rounds = 5;
