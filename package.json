@@ -1,5 +1,8 @@
 {
   "name": "dictator-web",
+  "scripts": {
+    "start": "node ./index.js"
+  },
   "dependencies": {
     "express": "*",
     "ws": "*"

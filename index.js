@@ -6,7 +6,7 @@ var app = express();
 app.use(express.static(__dirname + '/static'));
 
 var server = http.createServer(app);
-server.listen(3000);
+server.listen(3000, '0.0.0.0');
 
 var wss = new WebSocketServer({server: server});
 wss.on('connection', function (ws) {
