@@ -2,8 +2,8 @@ var soundIsPlaying = false;
 var speachSpeed = 120;
 
 $(function() {
-	meSpeak.loadConfig('http://localhost:3000/vendor/mespeak/mespeak_config.json');
-	meSpeak.loadVoice('http://localhost:3000/vendor/mespeak/voices/en/en-n.json');
+	meSpeak.loadConfig('/vendor/mespeak/mespeak_config.json');
+	meSpeak.loadVoice('/vendor/mespeak/voices/en/en-n.json');
 });
 
 $("#playButton").click(function() {

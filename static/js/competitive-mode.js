@@ -13,8 +13,8 @@ total_score = 0;
 
 $(document).ready(function() {
 	//initialize meSpeak
-	meSpeak.loadConfig("http://localhost:3000/vendor/mespeak/mespeak_config.json");
-	meSpeak.loadVoice('http://localhost:3000/vendor/mespeak/voices/en/en-us.json');
+	meSpeak.loadConfig("/vendor/mespeak/mespeak_config.json");
+	meSpeak.loadVoice('/vendor/mespeak/voices/en/en-us.json');
 	
 	console.log('meSpeak loaded');
 	
