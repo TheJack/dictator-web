@@ -18,7 +18,7 @@ app.get('/wrongWord/:word', function (req, res) {
   }
   ++wrongWords[word];
   console.log('word ' + word + ' mistaken ' + wrongWords[word] + ' times.');
-  res.end();
+  res.json({ok: true});
 });
 
 var getWrongCount = function (word) {
