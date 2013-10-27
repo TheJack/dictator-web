@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "express": "*",
-    "ws": "*"
+    "ws": "*",
+    "request": "*"
   }
 }

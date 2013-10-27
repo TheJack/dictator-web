@@ -1,11 +1,12 @@
 var StringUtils = require('./string_utils.js');
+var request = require('request');
 
 var Game = function (players) {
   console.log('starting a new game...');
-  this.words = ['omg', 'wtf', 'ebasi', 'gggg', 'prase'];
   var game = this;
   for (var i = 0; i < players.length; ++i) {
     players[i].score = 0;
+    players[i].hasAnswered = {};
 
     (function () {
       var player = players[i];
@@ -15,7 +16,22 @@ var Game = function (players) {
     })();
   }
   this.players = players;
-  this.start();
+  this.retrieveWords(function (err, words) {
+    if (err) {
+      words = Game.fallback_words.slice(0, Game.rounds);
+    }
+    game.words = words;
+    game.start();
+  });
+};
+
+Game.prototype.retrieveWords = function (cb) {
+  request({
+    url: 'http://localhost:3002/randomWords/' + Game.rounds,
+    json: true
+  }, function (err, res, body) {
+    cb(err, body);
+  });
 };
 
 Game.prototype.handlePlayerMessage = function (player, parts) {
@@ -33,6 +49,10 @@ Game.prototype.handlePlayerMessage = function (player, parts) {
 Game.prototype.handleAnswer = function (player, argsArray) {
   var round = argsArray[0];
   var word = argsArray[1].toLowerCase();
+  if (player.hasAnswered.hasOwnProperty(round)) {
+    return;
+  }
+  player.hasAnswered[round] = true;
   var editDistance = StringUtils.editDistance(word, this.words[round]);
   var score = Math.max(0, this.words[round].length - editDistance);
   player.score += score;
@@ -113,7 +133,10 @@ Game.prototype.end = function () {
   this.emit(message);
 };
 
-Game.rounds = 2;
+Game.rounds = 5;
 Game.round_timeout = 10;
+Game.fallback_words = ['word', 'temporary', 'singular',
+  'command', 'type', 'console', 'computer', 'water',
+  'tangent', 'road', 'house', 'relative', 'comparison'];
 
 module.exports = Game;
