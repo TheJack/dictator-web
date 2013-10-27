@@ -1,4 +1,4 @@
-socket = new WebSocket("ws://192.168.1.4:3000");
+socket = new WebSocket("ws://10.0.249.107:3000"); //10.0.249.107 192.168.1.4:3000"
 game_round = 0;
 game_users = [];
 game_scores = [];
@@ -129,7 +129,7 @@ function finish_game(final_scores) {
 }
 
 function show_final_dialog() {
-	$('#finalScore').html(your_score + ' of maximum ' + total_score);
+	$('#finalScore').html(your_score + ' out of maximum ' + total_score + '.');
 	for (var i = 0; i < game_scores.length; ++i) {
 		$('#finalRankings').append('<li>' + game_users[i] + ' - ' + game_scores[i] + ' points</li>');
 	}

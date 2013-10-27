@@ -1,7 +1,7 @@
 var soundIsPlaying = false;
 var speachSpeed = 120;
 
-$(document).ready(function() {
+$(function() {
 	meSpeak.loadConfig('http://localhost:3000/vendor/mespeak/mespeak_config.json');
 	meSpeak.loadVoice('http://localhost:3000/vendor/mespeak/voices/en/en-us.json');
 });
@@ -19,12 +19,12 @@ $("#playButton").click(function() {
 
 		$("#text").hide("fast");
 		$("#playButton").hide("fast");
+		$('#submitButton').show();
 		
 		playParagraph(text, function() {
 			soundIsPlaying = false;
 			console.log("finished");
 			
-			$("#text").show("fast");
 			$("#playButton").show("fast");
 		});
 	}
@@ -125,7 +125,7 @@ function get_examples(meaningEntry) {
 	return $.map(meaningEntry.entries, function(example, exampleIndex) {
 		return example.terms[0].text;
 	})
-}
+};
 
 function show_definition(meanings) {
 	$('#wordDefinition').empty();
@@ -147,4 +147,57 @@ function show_definition(meanings) {
 	} else {
 		$('#wordDefinition').html('Sorry, definition not found!');
 	}
-}
+};
+
+$("#submitButton").click(function() {
+	console.log('inside button');
+	
+	$('#userInput').prop('conteneditable', 'false');
+	show_diff();
+	show_side_by_side();
+	
+	$('#submitButton').hide();
+	
+	return false;
+});
+
+function show_diff() {
+	var originalText = $('#text').text();
+	var typedText = $('#userInput').text();
+	var diff = JsDiff.diffChars(originalText, typedText);
+	console.log(diff);
+	
+	var fragment = document.createDocumentFragment();
+	for (var i=0; i < diff.length; i++) {
+
+		if (diff[i].added && diff[i + 1] && diff[i + 1].removed) {
+			var swap = diff[i];
+			diff[i] = diff[i + 1];
+			diff[i + 1] = swap;
+		}
+
+		var node;
+		if (diff[i].removed) {
+			node = document.createElement('del');
+			node.appendChild(document.createTextNode(diff[i].value));
+		} else if (diff[i].added) {
+			node = document.createElement('ins');
+			node.appendChild(document.createTextNode(diff[i].value));
+		} else {
+			node = document.createTextNode(diff[i].value);
+		}
+		fragment.appendChild(node);
+	}
+
+	result = document.getElementById('textDiff');
+	result.textContent = '';
+	result.appendChild(fragment);
+};
+
+function show_side_by_side() {
+	$('#originalText').text($('#text').text());
+	
+	$('.diffLabel').show();
+	$('#userInput').parent().css({float: "left", width: "50%"});
+	$('#originalText').parent().css({float: "right", width: "50%"});
+};

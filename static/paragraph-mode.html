@@ -15,10 +15,22 @@
 		<div id="speedUpButton" class="button">Speed Up</div>
 
 		<br/>
-		<div id="userInput" contenteditable="true" data-placeholder="Enter here" class="text" spellcheck="false"></div>
+		<div style="overflow: auto;">
+			<div>
+				<div class='diffLabel'>Your input</div>
+				<div id="userInput" contenteditable="true" data-placeholder="Enter here" class="text" spellcheck="false"></div>
+			</div>
+			<div>
+				<div class='diffLabel'>Original input</div>
+				<div id="originalText"></div>
+			</div>
+		</div>
+		
 		<br/>
-
-		<div id="submitButton" class="button">
+		
+		<div id="textDiff"></div>
+		
+		<div id="submitButton" class="button" style="display: none;">
 			Submit it!
 		</div>
 		<br/>
@@ -28,6 +40,7 @@
 	<script src="vendor/jquery-1.10.2.min.js"></script>
 	<script src="vendor/mespeak/mespeak.js" type="text/javascript"></script>
 	<script src="js/data-placeholder.js" type="text/javascript"></script>
+	<script src="vendor/diff.js" type="text/javascript"></script>
 	<script src="js/paragraph-mode.js" type="text/javascript"></script>
 </body>
 </html>

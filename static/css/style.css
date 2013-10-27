@@ -12,6 +12,37 @@ h1, h2, h3, h4 {
 	font-family: "freight-sans-pro","Myriad Pro","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
 }
 
+del {
+	text-decoration: none;
+	color: #b30000;
+	background: #fadad7;
+}
+
+ins {
+	text-decoration: none;
+	background: #00ff00;
+}
+
+.diffLabel {
+	display: none;
+	font-size: 1.5em;
+	text-align: center;
+}
+
+#textDiff {
+	text-align: center;
+	margin: 25px;
+	background: #ECECEC;
+	overflow: auto;
+	clear: both;
+}
+
+.contentDiv {
+	text-align: center;
+	margin: 5px;
+	background: #ECECEC;
+}
+
 .button {
 	height: 20px;
 	background-color: red;
