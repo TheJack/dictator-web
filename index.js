@@ -8,6 +8,21 @@ var WebSocketServer = require('ws').Server;
 var app = express();
 app.use(express.static(__dirname + '/static'));
 
+var wrongWords = {};
+
+app.get('/wrongWord/:word', function (req, res) {
+  var word = req.param('word');
+  if (!wrongWords.hasOwnProperty(word)) {
+    wrongWords[word] = 0;
+  }
+  ++wrongWords[word];
+  console.log('word ' + word + ' mistaken ' + wrongWords[word] + ' times.');
+});
+
+app.get('/mistakes', function (req, res) {
+  res.json(Object.keys(wrongWords));
+});
+
 var server = http.createServer(app);
 server.listen(3000, '0.0.0.0');
 
