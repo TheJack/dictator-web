@@ -37,6 +37,12 @@ var net = require('net');
 var netServer = net.createServer(function (con) {
   con.on('error', function (err) {
     console.error(err);
+    p.removeAllListeners('client_message');
+    playerQueue.removePlayer(p);
+  });
+  con.on('close', function () {
+    p.removeAllListeners('client_message');
+    playerQueue.removePlayer(p);
   });
   var p = new Player();
   con.on('message', function (message) {
