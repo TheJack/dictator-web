@@ -1,4 +1,4 @@
-socket = new WebSocket("ws://10.255.1.18:3000");
+socket = new WebSocket("ws://192.168.1.4:3000");
 game_round = 0;
 game_users = [];
 game_scores = [];
@@ -8,6 +8,8 @@ queue = [];
 round_running = false;
 interval_id = 0;
 your_score = 0;
+answer_submitted = false;
+total_score = 0;
 
 $(document).ready(function() {
 	//initialize meSpeak
@@ -38,6 +40,8 @@ $(document).unload(function() {
 	delete round_running;
 	delete interval_id;
 	delete your_score;
+	delete answer_submitted;
+	delete total_score;
 });
 
 socket.onmessage = function (event) {
@@ -125,7 +129,7 @@ function finish_game(final_scores) {
 }
 
 function show_final_dialog() {
-	$('#finalScore').html(your_score);
+	$('#finalScore').html(your_score + ' of maximum ' + total_score);
 	for (var i = 0; i < game_scores.length; ++i) {
 		$('#finalRankings').append('<li>' + game_users[i] + ' - ' + game_scores[i] + ' points</li>');
 	}
@@ -149,7 +153,9 @@ function show_scores() {
 function start_round(round, word, time_out) {
 	clear_input_field();
 	
+	total_score += word.length;
 	round_running = true;
+	answer_submitted = false;
 	game_round = round;
 	$('#currentRound').html(round);
 	
@@ -170,26 +176,22 @@ function startTimer(id) {
 	function updateTimer() {
 		$('#currentTimeLeft').html(time_left);
 		if (time_left > 0) {
-			if (time_left == 4) {
+			if (time_left <= 4 && !answer_submitted) {
 				$('#timeContainer').css('color', 'red');
 			}
 			time_left--;
 		} else {
-			stopTimer();
+			clearInterval(interval_id);
+			round_running = false;
+			offer_round();
 		}
 	}
-}
-
-function stopTimer() {
-	clearInterval(interval_id);
-	round_running = false;
-	offer_round();
 }
 
 function finish_round(word) {
 	send_to_server('answer,' + game_round + ',' + word);
 	$('#timeContainer').css('color', 'green');
-	stopTimer();
+	answer_submitted = true;
 }
 
 $('#submitButton').click(function() {
@@ -214,7 +216,7 @@ $('#userInput').keydown(function(e){
 
 var userIsTyping = false;
 var typingTimer;                //timer identifier
-var doneTypingInterval = 3000;  //time in ms, 5 second for example
+var doneTypingInterval = 1500;  //time in ms, 1.5 second for example
 
 //on keyup, start the countdown
 $('#userInput').keyup(function(){
