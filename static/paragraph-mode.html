@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dictator</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<div class="content">
+		<h1>Dictator</h1>
+
+		<div id="text" class="text" contenteditable="true" data-placeholder="Paste paragraph here" spellcheck="false"></div>
+		<br/>
+		<div id="speedDownButton" class="button">Speed Down</div>
+		<div id="playButton" class="button">Play it!</div>
+		<div id="speedUpButton" class="button">Speed Up</div>
+
+		<br/>
+		<div id="userInput" contenteditable="true" data-placeholder="Enter here" class="text" spellcheck="false"></div>
+		<br/>
+
+		<div id="submitButton" class="button">
+			Submit it!
+		</div>
+		<br/>
+		<div id="wordDefinition"></div>
+	</div>
+	
+	<script src="vendor/jquery-1.10.2.min.js"></script>
+	<script src="vendor/mespeak/mespeak.js" type="text/javascript"></script>
+	<script src="js/data-placeholder.js" type="text/javascript"></script>
+	<script src="js/paragraph-mode.js" type="text/javascript"></script>
+</body>
+</html>
