@@ -2,6 +2,7 @@ var express = require('express');
 var http = require('http');
 var playerQueue = require('./queue.js');
 var Player = require('./player.js');
+var request = require('request');
 var WebSocketServer = require('ws').Server;
 
 
@@ -17,10 +18,31 @@ app.get('/wrongWord/:word', function (req, res) {
   }
   ++wrongWords[word];
   console.log('word ' + word + ' mistaken ' + wrongWords[word] + ' times.');
+  res.end();
 });
 
+var getWrongCount = function (word) {
+  var res = 1;
+  if (wrongWords.hasOwnProperty(word)) {
+    res = wrongWords[word];
+  }
+  return res;
+};
+
 app.get('/mistakes', function (req, res) {
-  res.json(Object.keys(wrongWords));
+  var words = Object.keys(wrongWords);
+//  words = ['and', 'play', 'consequence'];
+  console.log(words);
+  request({url: 'http://localhost:3002/wordCounts', method: 'POST', json: {words: words}},
+    function (err, _, body) {
+      words.sort(function (w1, w2) {
+        console.log(w1);
+        console.log(w2);
+        return -(body[w1] * getWrongCount(w1) - body[w2] * getWrongCount(w2));
+      });
+      console.log(body);
+      res.json(words);
+    });
 });
 
 var server = http.createServer(app);
