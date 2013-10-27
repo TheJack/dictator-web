@@ -1,5 +1,5 @@
 var soundIsPlaying = false;
-var speachSpeed = 120;
+var speachSpeed = 50;
 
 $(function() {
 	meSpeak.loadConfig('http://localhost:3000/vendor/mespeak/mespeak_config.json');
@@ -38,7 +38,9 @@ function playParagraph(paragraphText, cb) {
 	function playSentance(sentenceIndex) {
 		console.log('Playing ' + sentenceIndex);
 		if (sentenceIndex < sentences.length) {
+			
 			meSpeak.speak(sentences[sentenceIndex], { speed: speachSpeed }, function() {
+				setTimeout(1000);
 				playSentance(sentenceIndex + 1);
 			});
 		} else {
