@@ -6,8 +6,10 @@
 	<link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
 </head>
 <body>
+    <div class="jumbotron" style="text-align:center;">
+
 	<div class="content">
-		<h1>Dictator</h1>
+		<h1>Competitive Mode</h1>
 		<div>
 		You are playing against:
 			<ol id="rankingsList">
@@ -15,11 +17,12 @@
 		</div>
 		<br/>
 		<div id="userInput" contenteditable="true" data-placeholder="Enter here" class="text" >
+			<br>
 		</div>
-		<br/>
-		<div id="submitButton" class="button">
+		<div class="btn btn-primary btn-lg" id="submitButton" class="button" style="float:right;margin:0;margin-top:5px;">
 			Submit it!
 		</div>
+		<div style="clear:both;"></div>
 		<br/>
 		<div>
 			<div id="timeContainer" style="float: left;">Time: <span id="currentTimeLeft">?</span> sec</div>
@@ -44,7 +47,7 @@
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
 	</div>
-	
+</div>	
 	<script src="vendor/jquery-1.10.2.min.js"></script>
 	<script src="vendor/mespeak/mespeak.js" type="text/javascript"></script>
 	<script src="js/data-placeholder.js" type="text/javascript"></script>

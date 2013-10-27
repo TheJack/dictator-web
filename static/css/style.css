@@ -2,6 +2,28 @@ h1, h2, h3, h4 {
 	font-weight: 700;
 }
 
+body {
+	background: none repeat scroll 0 0 #08090A;
+    border-top: 6px solid #0781AA;
+    color: #EEEEEE;
+    font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Verdana,Tahoma,sans-serif;
+    font-size: 12px;
+    line-height: 180%;
+	height:700px;
+	margin:0;
+	padding:0;
+}
+
+#userInput {
+	background: #FFFFFF;
+}
+
+.btn {
+	min-width:200px;
+	margin:20px;
+
+}
+
 .text {
 	text-align: justify;
 }
@@ -9,6 +31,7 @@ h1, h2, h3, h4 {
 .content {
 	margin: 0 auto;
 	max-width: 50%;
+	height:50%;
 	font-family: "freight-sans-pro","Myriad Pro","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
 }
 
@@ -53,7 +76,9 @@ ins {
 
 div[data-placeholder]:not(:focus):not([data-div-placeholder-content]):before {
     content: attr(data-placeholder);
-    float: left;
+   
+   
     margin-left: 5px;
     color: gray;
+	background: #ffffff;
 }
