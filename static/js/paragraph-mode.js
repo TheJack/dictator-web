@@ -1,9 +1,9 @@
 var soundIsPlaying = false;
-var speachSpeed = 50;
+var speachSpeed = 120;
 
 $(function() {
 	meSpeak.loadConfig('http://localhost:3000/vendor/mespeak/mespeak_config.json');
-	meSpeak.loadVoice('http://localhost:3000/vendor/mespeak/voices/en/en-us.json');
+	meSpeak.loadVoice('http://localhost:3000/vendor/mespeak/voices/en/en-n.json');
 });
 
 $("#playButton").click(function() {
@@ -194,6 +194,28 @@ function show_diff() {
 	result = document.getElementById('textDiff');
 	result.textContent = '';
 	result.appendChild(fragment);
+	
+	compute_statistics(diff, originalText);
+};
+
+function compute_statistics(diff, originalText) {
+	var words = originalText.split(/ /);
+	var flag = false;
+	
+	for (var i = 0; i < words.length; ++i) {
+		flag = false;
+		for (var j = 0; j < diff.length; ++j) {
+			if (diff[j].value.indexOf(words[i]) != -1) {
+				flag = true;
+				break;
+			}
+		}
+		
+		if (!flag) {
+			$.get('/wrongWord/' + words[i]);
+			console.log('sent for ' + words[i]);
+		}
+	}
 };
 
 function show_side_by_side() {
